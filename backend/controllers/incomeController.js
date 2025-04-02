@@ -17,7 +17,7 @@ const addIncome = async (req, res) => {
               description,
               date 
        })
-       income.save();
+       await income.save();
          return res.status(200).json({message : "Income added successfully" , income});
 
     }catch(error){
@@ -30,8 +30,8 @@ const allIncome = async (req, res) => {
        const userId = req.user._id;
        try {
         const income = await Income.find({userId}).sort({date : -1});
-        if(!income){
-            return res.status(404).json({message : "No income found"})
+        if (!income || income.length === 0) {
+          return res.status(404).json({ message: "No income found" });
         }
         return res.status(200).json({income});
        } catch (error) {
@@ -44,6 +44,9 @@ const deleteIncome = async (req, res) => {
     const { id } = req.params;
 
     const income = await Income.findByIdAndDelete(id);
+     if (!income) {
+       return res.status(404).json({ message: "Income record not found" });
+     }
     return res.status(200).json({ message: "Income deleted successfully" });
   } catch (error) {
     return res
@@ -57,16 +60,14 @@ const updateIncome = async (req, res) => {
   try {
     const { id } = req.params;
     const { amount, source, date } = req.body; // Assuming these are the fields you want to update
-
+    
     const updatedIncome = await Income.findByIdAndUpdate(
       id,
       { amount, source, date },
       { new: true, runValidators: true }
     );
 
-    if (!updatedIncome) {
-      return res.status(404).json({ message: "Income record not found" });
-    }
+
 
     return res
       .status(200)
@@ -77,8 +78,6 @@ const updateIncome = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
-
-
 
 
 module.exports = {

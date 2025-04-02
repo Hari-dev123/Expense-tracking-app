@@ -59,18 +59,20 @@ const loginUser = async(req, res) => {
    }
 
 };
-const getUserInfo = (req, res) => {
-   const {user : {id}} = req.body;
-  try {
-     const user = User.findById(id);
-     if (!user) {
-       return res.status(400).json({ message: "User not found" });
-     }
-     return res.status(200).json({ user });
-  } catch (error) {
-     return res.status(500).json({ message: "Internal server error" ,error : error.message});
-  }
 
+const getUserInfo = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password"); // Exclude password from response
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ user });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
 };
+
 
 module.exports = { registeruser, loginUser, getUserInfo }; // Ensure export

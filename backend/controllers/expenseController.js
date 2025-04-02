@@ -15,7 +15,7 @@ const addExpense = async (req, res) => {
 
   try {
     const expense = new Expense({
-      UserId: userId, // Ensure correct field name
+      userId: userId, // Ensure correct field name
       category,
       amount,
       description,
@@ -37,7 +37,7 @@ const addExpense = async (req, res) => {
 const allExpense = async (req, res) => {
   const userId = req.user._id;
   try {
-    const expenses = await Expense.find({ UserId: userId }).sort({ date: -1 });
+    const expenses = await Expense.find({ userId }).sort({ date: -1 });
     if (!expenses.length) {
       return res.status(404).json({ message: "No expenses found" });
     }

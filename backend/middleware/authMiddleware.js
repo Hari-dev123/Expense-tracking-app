@@ -23,7 +23,7 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid Token" });
     }
 
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "No user found with this ID" });
     }
