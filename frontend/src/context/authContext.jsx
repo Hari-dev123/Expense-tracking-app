@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState,  useLayoutEffect } from "react";
 import axios from "axios";
 
 // Create Context
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     const API_URL = import.meta.env.VITE_BACKEND_URI;
 
     // Fetch user details when app loads
-    useEffect(() => {
+    useLayoutEffect(() => {
         const fetchUser = async () => {
             const token = localStorage.getItem("token");
             if (!token) {
@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
                 });
 
                 setUser(response.data.user);
+                console.log(response.data.user.fullName)
             } catch (error) {
                 console.error("Error fetching user:", error.response?.data?.message || error.message);
                 localStorage.removeItem("token");
