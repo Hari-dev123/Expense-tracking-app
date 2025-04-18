@@ -51,7 +51,7 @@ const getDashboardData = async (req, res) => {
     const recentTransactions = [...lastTransactions[0], ...lastTransactions[1]]
       .map((item) => ({
         ...item.toObject(),
-        type: item.modelName === "Income" ? "income" : "expense",
+        type: item instanceof Income ? "income" : "expense",
       }))
       .sort((a, b) => b.date - a.date);
 
