@@ -4,6 +4,12 @@ import { LuWallet } from "react-icons/lu";
 import { GiPayMoney } from "react-icons/gi";
 import { FaArrowRight } from "react-icons/fa";
 import { DashboardContext } from '../../context/dashboardContext';
+import PriceTag from '../../components/PriceTag';
+
+import ExpenseChart from '../../components/ExpenseChart';
+import FinancialOverviewChart from '../../components/FinancialOverview';
+import RecentExpenses from '../../components/RecentExpenses';
+import RecentTransactions from '../../components/RecentTransactions';
 
 const DashboardContent = () => {
     const { dashboardData } = useContext(DashboardContext);
@@ -15,10 +21,16 @@ const DashboardContent = () => {
 
     console.log(data);
 
+    const pieChartData = [
+        { name: "Income", value: data?.totalIncome || 0, color: "#1E90FF" },
+        { name: "Expense", value: data?.totalExpense || 0, color: "#32CD32" },
+        { name: "Balance", value: data?.totalBalance || 0, color: "#FFD700" },
+    ];
+
     return (
         <div className='bg-yellow-100 h-screen flex flex-col items-center p-5'>
             {/* Cards Container */}
-            <div className='flex justify-between gap-2 w-full max-w-6xl'>
+            <div className='flex justify-between gap-x-5 w-full max-w-6xl'>
 
                 {/* Card 1 */}
                 <div className='flex justify-evenly items-center shadow-2xl w-1/3 py-10 bg-red-800 rounded-lg'>
@@ -57,7 +69,7 @@ const DashboardContent = () => {
             </div>
 
             {/* Recent Transactions Section */}
-            <div className='flex justify-between gap-2 mt-7 bg-gray-300 w-full max-w-6xl'>
+            <div className='flex justify-between gap-2 mt-7 p-4 bg-gray-100 w-full max-w-6xl'>
                 <div className='w-1/2 py-4 px-2 rounded-md bg-white shadow-2xl'>
                     <div className='flex justify-between items-center'>
                         <h3 className='text-md font-bold'>Recent Transactions</h3>
@@ -67,23 +79,37 @@ const DashboardContent = () => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-2 mt-4'>
+                    <div className='flex flex-col gap-2 mt-4 h-20'>
                         {data?.recentTransactions?.slice(0, 5).map((transaction, index) => (
                             <div key={index} className='flex justify-between items-center bg-gray-200 p-2 rounded-md'>
                                 <div>
                                     <p className='text-sm font-semibold'>
-                                        {transaction.type === "expense" ? transaction.source : transaction.category}
+                                        {transaction.type === "income" ? transaction.source : transaction.category}
                                     </p>
                                     <p className='text-xs text-gray-500'>{transaction.date}</p>
                                 </div>
-                                <p className='text-sm font-semibold'>
-                                    <span>&#8377;</span> {transaction.amount}
-                                </p>
+                                
+                                 <PriceTag type={transaction.type} amount={transaction.amount} />
+                                
                             </div>
                         ))}
                     </div>
+
+                </div>
+
+                <div className='w-1/2 py-4 px-2 h-full rounded-md bg-white shadow-2xl'>
+                    <FinancialOverviewChart totalIncome={data.totalIncome} totalBalance={data.totalBalance} totalExpense={data.totalExpense} />
                 </div>
             </div>
+            
+
+
+           <RecentExpenses data={data} />
+            
+            
+           
+
+
         </div>
     );
 };
