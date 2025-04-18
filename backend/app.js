@@ -10,6 +10,9 @@ const app = express();
 require("dotenv").config();
 
 //middleware
+app.get("/", (req, res) => {
+  res.send('server is running')
+});
 app.use(cors())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -18,6 +21,7 @@ app.use("/api/income", incomeRoutes);
 app.use("/api/expense", expenseRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 connectDB();
+
 
 const PORT = process.env.PORT || 5000;
 
